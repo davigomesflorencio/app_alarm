@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NumberPickerText">
+        <item name="android:textColor">@color/primaryColorDark</item>
+        <item name="android:textSize">45sp</item>
+    </style>
+</resources>

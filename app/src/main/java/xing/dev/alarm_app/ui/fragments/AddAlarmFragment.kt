@@ -1,0 +1,183 @@
+package xing.dev.alarm_app.ui.fragments
+
+import android.app.Application
+import android.content.Context
+import android.content.res.ColorStateList
+import android.os.Build
+import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import kotlinx.coroutines.launch
+import xing.dev.alarm_app.R
+import xing.dev.alarm_app.databinding.FragmentAddAlarmBinding
+import xing.dev.alarm_app.databinding.WeekdayCardBinding
+import xing.dev.alarm_app.domain.database.AlarmDatabase
+import xing.dev.alarm_app.ui.viewModels.AddAlarmViewModel
+import xing.dev.alarm_app.ui.viewModels.AddAlarmViewModelFactory
+import xing.dev.alarm_app.util.hideSoftKeyboard
+import xing.dev.alarm_app.util.showBasicMessageDialog
+
+
+class AddAlarmFragment : Fragment() {
+
+    private lateinit var viewModel: AddAlarmViewModel
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = FragmentAddAlarmBinding.inflate(
+            layoutInflater, container, false
+        )
+
+        val application: Application = requireNotNull(this.activity).application
+        val alarmDao = AlarmDatabase.getInstance(application).alarmDao
+        val viewModelFactory = AddAlarmViewModelFactory(application, alarmDao)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(AddAlarmViewModel::class.java)
+
+
+        binding.addAlarmContainer.setOnClickListener {
+            hideSoftKeyboard(requireContext(), it)
+        }
+
+        binding.saveAlarmButton.setOnClickListener {
+            lifecycleScope.launch {
+                val saved = viewModel.saveAlarm(binding.alarmTitle.text.toString())
+                if (!saved) {
+                    showBasicMessageDialog("Erro ao salvar o Alarme!", requireActivity())
+                } else {
+                    it.findNavController().navigateUp()
+                }
+            }
+        }
+
+        binding.cancelButton.setOnClickListener {
+            it.findNavController().navigateUp()
+        }
+
+        val alarmSelectListener = View.OnClickListener {
+            val popupMenu = PopupMenu(requireContext(), it)
+            popupMenu.menuInflater.inflate(R.menu.alarm_types_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener {
+                viewModel.setAlarmSound(it.title.toString())
+                true
+            }
+            popupMenu.show()
+        }
+
+        binding.selectAlarmButton.setOnClickListener(alarmSelectListener)
+        binding.alarmSoundText.setOnClickListener(alarmSelectListener)
+
+        binding.previewButton.setOnClickListener {
+            if (viewModel.mediaPlaying.value == true) {
+                viewModel.stopAlarmSound()
+//                it.backgroundTintList =
+//                    context?.let { it1 -> ColorStateList.valueOf(it1.getColor(R.color.primaryColorDark)) }
+//                it.background = context?.let { it1 ->
+//                    ContextCompat.getDrawable(
+//                        it1,
+//                        R.drawable.ic_baseline_play_arrow_24
+//                    )
+//                }
+            } else {
+//                it.backgroundTintList =
+//                    context?.let { it1 -> ColorStateList.valueOf(it1.getColor(R.color.primaryColorLight)) }
+//                it.background = context?.let { it1 ->
+//                    ContextCompat.getDrawable(
+//                        it1,
+//                        R.drawable.ic_baseline_stop_24
+//                    )
+//                }
+                viewModel.playSelectedAlarmSound()
+            }
+        }
+
+        binding.vibrationSwitch.setOnCheckedChangeListener { p0, p1 ->
+            viewModel.addVibration.value = p1
+            if (p1) {
+                val vibrator = application.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        200,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            }
+        }
+
+        binding.volumeSlider.value = 0.5F
+        binding.volumeSlider.addOnChangeListener { _, value, _ ->
+            viewModel.changeAlarmVolume(value)
+        }
+
+        binding.hourPicker.minValue = 1
+        binding.hourPicker.maxValue = 12
+        binding.hourPicker.value = viewModel.hour.toInt()
+        val hourRage = 1..12
+        binding.hourPicker.displayedValues = (hourRage.map {
+            it.toString().padStart(2, '0')
+        }).toTypedArray()
+        binding.hourPicker.setOnValueChangedListener { _, _, i ->
+            viewModel.hour = i
+        }
+
+        binding.minutePicker.minValue = 0
+        binding.minutePicker.maxValue = 59
+        binding.minutePicker.value = viewModel.minute.toInt()
+        val minRange = 0..59
+        binding.minutePicker.displayedValues = (minRange.map {
+            it.toString().padStart(2, '0')
+        }).toTypedArray()
+        binding.minutePicker.setOnValueChangedListener { _, _, i ->
+            viewModel.minute = i
+        }
+
+
+        val days = arrayListOf("SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM")
+        days.forEach {
+            var day = it
+            val weekdayBinding =
+                WeekdayCardBinding.inflate(layoutInflater, binding.weekdaysHolder, false)
+            weekdayBinding.selected = false
+            weekdayBinding.weekDay = it
+            val layoutParams = LinearLayout.LayoutParams(
+                0,
+                (80 * requireContext().resources.displayMetrics.density).toInt(),
+                1f
+            )
+            if (it != "SEG") {
+                layoutParams.marginEnd = 10
+            }
+
+            weekdayBinding.button.setOnClickListener {
+                weekdayBinding.selected = !weekdayBinding.selected!!
+                if (weekdayBinding.selected == true) {
+                    viewModel.addToSelectedDays(day)
+
+                } else {
+                    viewModel.removeFromSelectedDays(day)
+
+                }
+            }
+
+            weekdayBinding.root.layoutParams = layoutParams
+            binding.weekdaysHolder.addView(weekdayBinding.root)
+        }
+
+        return binding.root
+    }
+
+}

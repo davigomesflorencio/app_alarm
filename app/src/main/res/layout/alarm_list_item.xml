@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="10dp"
+    android:background="@drawable/friend_list_item_border"
+    android:padding="10dp">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/oval_border"
+        android:backgroundTint="@color/primaryColorLight"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDayWeeks"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtDayWeeks" />
+
+    <TextView
+        android:id="@+id/txtDayWeeks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:text="Segunda, Terça, Quarta, Quinta"
+        app:layout_constraintStart_toEndOf="@+id/materialCardView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Segunda, Terça, Quarta, Quinta" />
+
+    <TextView
+        android:id="@+id/txtHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="04:00"
+        android:textColor="@color/primaryColorDark"
+        android:textSize="50sp"
+        app:layout_constraintStart_toStartOf="@id/txtDayWeeks"
+        app:layout_constraintTop_toBottomOf="@id/txtDayWeeks"
+        tools:text="04:00" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/alarm"
+        app:layout_constraintBottom_toTopOf="@id/txtIsAM"
+        app:layout_constraintStart_toStartOf="@id/txtIsAM"
+        app:tint="@color/primaryColorLight" />
+
+    <TextView
+        android:id="@+id/txtIsAM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="5dp"
+        android:text="AM"
+        android:textColor="@color/primaryColorDark"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/txtHour"
+        app:layout_constraintStart_toEndOf="@id/txtHour"
+        />
+
+    <TextView
+        android:id="@+id/txtAlarmName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome do Alarme"
+        android:textColor="@color/primaryColorDark"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/txtHour"
+        app:layout_constraintTop_toBottomOf="@id/txtHour"
+        tools:text="Nome do alarme " />
+
+    <ImageView
+        android:id="@+id/deleteIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_delete_outline_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/disableSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription=""
+        android:theme="@style/Theme.Alarm_app"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtDayWeeks" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="weekDay"
+            type="String" />
+
+        <variable
+            name="selected"
+            type="Boolean" />
+    </data>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@{selected?@color/primaryColorLight:@color/white}"
+        android:padding="0dp"
+        android:text="@{weekDay}"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        app:cornerRadius="15dp"
+        app:textColor="@{selected==false?@color/primaryColorDark:@color/white}"
+        tools:backgroundTint="@color/primaryColorLight"
+        tools:text="Mon"
+        tools:textColor="@color/white" />
+</layout>

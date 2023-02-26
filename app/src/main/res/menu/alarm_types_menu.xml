@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/buzzerAlarm"
+        android:title="@string/default_sound" />
+    <item
+        android:id="@+id/clockAlarm"
+        android:title="@string/clock_sound" />
+    <item
+        android:id="@+id/roosterAlarm"
+        android:title="@string/rooster_sound" />
+</menu>

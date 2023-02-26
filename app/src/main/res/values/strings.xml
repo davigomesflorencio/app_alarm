@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">alarm_app</string>
+
+    <string name="default_sound">Default</string>
+    <string name="clock_sound">Clock</string>
+    <string name="rooster_sound">Rooster</string>
+</resources>
