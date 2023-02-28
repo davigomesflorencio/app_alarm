@@ -42,36 +42,37 @@
         tools:text="04:00" />
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@drawable/alarm"
-        app:layout_constraintBottom_toTopOf="@id/txtIsAM"
-        app:layout_constraintStart_toStartOf="@id/txtIsAM"
+        app:layout_constraintTop_toBottomOf="@id/txtDayWeeks"
+        app:layout_constraintStart_toEndOf="@id/txtHour"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:tint="@color/primaryColorLight" />
 
-    <TextView
-        android:id="@+id/txtIsAM"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="5dp"
-        android:text="AM"
-        android:textColor="@color/primaryColorDark"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/txtHour"
-        app:layout_constraintStart_toEndOf="@id/txtHour"
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/txtIsAM"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="4dp"-->
+<!--        android:layout_marginBottom="5dp"-->
+<!--        android:text="AM"-->
+<!--        android:textColor="@color/primaryColorDark"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/txtHour"-->
+<!--        app:layout_constraintStart_toEndOf="@id/txtHour"-->
+<!--        />-->
 
-    <TextView
-        android:id="@+id/txtAlarmName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nome do Alarme"
-        android:textColor="@color/primaryColorDark"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@id/txtHour"
-        app:layout_constraintTop_toBottomOf="@id/txtHour"
-        tools:text="Nome do alarme " />
+<!--    <TextView-->
+<!--        android:id="@+id/txtAlarmName"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Nome do Alarme"-->
+<!--        android:textColor="@color/primaryColorDark"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintStart_toStartOf="@id/txtHour"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/txtHour"-->
+<!--        tools:text="Nome do alarme " />-->
 
     <ImageView
         android:id="@+id/deleteIcon"
