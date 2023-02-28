@@ -19,5 +19,5 @@ interface AlarmDao {
     fun getAlarms(): LiveData<List<Alarm>>
 
     @Query("SELECT*FROM alarms WHERE dbId=:id LIMIT 1")
-    suspend fun getAlarm(id:String):Alarm?
+    suspend fun getAlarm(id: String): Alarm?
 }

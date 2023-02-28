@@ -1,19 +1,20 @@
 package xing.dev.alarm_app.services
 
 import android.app.AlarmManager
-import android.app.IntentService
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.JobIntentService
 import xing.dev.alarm_app.receivers.AlarmReceiver
 import xing.dev.alarm_app.util.Constants
 import java.util.*
 
 
-class AlarmService : IntentService(AlarmService::class.java.simpleName) {
+class AlarmService : JobIntentService() {
     private val notificationId = System.currentTimeMillis().toInt()
-    override fun onHandleIntent(intent: Intent?) {
-        val action = intent!!.action
+
+    override fun onHandleWork(intent: Intent) {
+        val action = intent.action
 
         if (action == Constants.ACTION_STOP_ALARM) {
             if (AlarmReceiver.taskRingtone!!.isPlaying) {

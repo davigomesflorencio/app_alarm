@@ -24,7 +24,7 @@ class AlarmNotificationHelper(base: Context) : ContextWrapper(base) {
         }
     }
 
-    fun createNotificationChannel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "alarm_name"
             val descriptionText = "Canal de Mensagens"
@@ -60,8 +60,12 @@ class AlarmNotificationHelper(base: Context) : ContextWrapper(base) {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setOngoing(true)
-            .addAction(R.drawable.ic_baseline_play_arrow_24, "Parar", stopAlarmTone(this))
-            .addAction(R.drawable.ic_baseline_snooze_24, "Soneca", snoozeAlarm(this))
+            .addAction(
+                R.drawable.ic_baseline_play_arrow_24,
+                "Parar",
+                stopAlarmTone(this.baseContext)
+            )
+            .addAction(R.drawable.ic_baseline_snooze_24, "Soneca", snoozeAlarm(this.baseContext))
 
     }
 

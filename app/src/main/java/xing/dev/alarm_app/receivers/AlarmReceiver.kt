@@ -30,12 +30,15 @@ class AlarmReceiver : BroadcastReceiver() {
             sendNotification(context)
 
         } else if (intent.action == Constants.NOTIFICATION_INTENT_ACTION_STOP_ALARM) {
-
+            if (taskRingtone!!.isPlaying) {
+                taskRingtone!!.stop()
+                vibrator!!.cancel()
+            }
         }
     }
 
 
-    fun sendNotification(context: Context) {
+    private fun sendNotification(context: Context) {
         val alarmNotificationHelper = AlarmNotificationHelper(context)
         val notification = alarmNotificationHelper.getNotificationBuilder().build()
         alarmNotificationHelper.getManager().notify(getID(), notification)
@@ -60,7 +63,6 @@ class AlarmReceiver : BroadcastReceiver() {
         var taskRingtone: Ringtone? = null
         var alert: Uri? = null
         var vibrator: Vibrator? = null
-
 
         fun getID(): Int {
             return (Date().time / 1000L % Int.MAX_VALUE).toInt()

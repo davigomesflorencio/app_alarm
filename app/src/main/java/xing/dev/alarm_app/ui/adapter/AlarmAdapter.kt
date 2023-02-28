@@ -32,13 +32,11 @@ class AlarmAdapter(private val alarmDao: AlarmDao) :
 
         fun bind(alarm: Alarm) {
             binding.disableSwitch.isChecked = !alarm.disabled
-            binding.txtAlarmName.text = alarm.name
             binding.txtDayWeeks.text = alarm.formattedRepeatDays()
             binding.txtHour.text = alarm.formattedTime()
-            binding.txtIsAM.text = if (alarm.isAM) "AM" else "PM"
 
             binding.disableSwitch.setOnCheckedChangeListener { switch, b ->
-                alarm?.let {
+                alarm.let {
                     it.disabled = !b
                     (switch as SwitchMaterial).apply {
                         if (it.disabled) {

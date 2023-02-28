@@ -2,7 +2,6 @@ package xing.dev.alarm_app.ui.fragments
 
 import android.app.Application
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -10,17 +9,13 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import kotlinx.coroutines.launch
-import xing.dev.alarm_app.R
 import xing.dev.alarm_app.databinding.FragmentAddAlarmBinding
 import xing.dev.alarm_app.databinding.WeekdayCardBinding
 import xing.dev.alarm_app.domain.database.AlarmDatabase
@@ -34,7 +29,7 @@ class AddAlarmFragment : Fragment() {
 
     private lateinit var viewModel: AddAlarmViewModel
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,9 +50,9 @@ class AddAlarmFragment : Fragment() {
 
         binding.saveAlarmButton.setOnClickListener {
             lifecycleScope.launch {
-                val saved = viewModel.saveAlarm(binding.alarmTitle.text.toString())
+                val saved = viewModel.saveAlarm()
                 if (!saved) {
-                    showBasicMessageDialog("Erro ao salvar o Alarme!", requireActivity())
+                    showBasicMessageDialog("Não foi possível criar o Alarme!", requireActivity())
                 } else {
                     it.findNavController().navigateUp()
                 }
@@ -68,42 +63,6 @@ class AddAlarmFragment : Fragment() {
             it.findNavController().navigateUp()
         }
 
-        val alarmSelectListener = View.OnClickListener {
-            val popupMenu = PopupMenu(requireContext(), it)
-            popupMenu.menuInflater.inflate(R.menu.alarm_types_menu, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener {
-                viewModel.setAlarmSound(it.title.toString())
-                true
-            }
-            popupMenu.show()
-        }
-
-        binding.selectAlarmButton.setOnClickListener(alarmSelectListener)
-        binding.alarmSoundText.setOnClickListener(alarmSelectListener)
-
-        binding.previewButton.setOnClickListener {
-            if (viewModel.mediaPlaying.value == true) {
-                viewModel.stopAlarmSound()
-//                it.backgroundTintList =
-//                    context?.let { it1 -> ColorStateList.valueOf(it1.getColor(R.color.primaryColorDark)) }
-//                it.background = context?.let { it1 ->
-//                    ContextCompat.getDrawable(
-//                        it1,
-//                        R.drawable.ic_baseline_play_arrow_24
-//                    )
-//                }
-            } else {
-//                it.backgroundTintList =
-//                    context?.let { it1 -> ColorStateList.valueOf(it1.getColor(R.color.primaryColorLight)) }
-//                it.background = context?.let { it1 ->
-//                    ContextCompat.getDrawable(
-//                        it1,
-//                        R.drawable.ic_baseline_stop_24
-//                    )
-//                }
-                viewModel.playSelectedAlarmSound()
-            }
-        }
 
         binding.vibrationSwitch.setOnCheckedChangeListener { p0, p1 ->
             viewModel.addVibration.value = p1
@@ -118,15 +77,10 @@ class AddAlarmFragment : Fragment() {
             }
         }
 
-        binding.volumeSlider.value = 0.5F
-        binding.volumeSlider.addOnChangeListener { _, value, _ ->
-            viewModel.changeAlarmVolume(value)
-        }
-
-        binding.hourPicker.minValue = 1
-        binding.hourPicker.maxValue = 12
+        binding.hourPicker.minValue = 0
+        binding.hourPicker.maxValue = 23
         binding.hourPicker.value = viewModel.hour.toInt()
-        val hourRage = 1..12
+        val hourRage = 0..23
         binding.hourPicker.displayedValues = (hourRage.map {
             it.toString().padStart(2, '0')
         }).toTypedArray()

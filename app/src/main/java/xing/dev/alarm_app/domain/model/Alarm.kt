@@ -13,10 +13,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 @TypeConverters(StringArrayConverter::class)
 data class Alarm(
     @PrimaryKey(autoGenerate = false) var dbId: String = "",
-    var name: String,
-    var sound: Int,
     var vibration: Boolean,
-    var volume: Float,
     var repeatDays: List<String>,
     var min: Int,
     var hour: Int,
