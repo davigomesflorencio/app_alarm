@@ -43,7 +43,7 @@ class AlarmNotificationHelper(base: Context) : ContextWrapper(base) {
         return manager as NotificationManager
     }
 
-    fun getNotificationBuilder(): NotificationCompat.Builder {
+    fun getNotificationBuilder(messageBody: String): NotificationCompat.Builder {
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             action = Constants.ACTION_STOP_ALARM
@@ -54,7 +54,7 @@ class AlarmNotificationHelper(base: Context) : ContextWrapper(base) {
         )
 
         return NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
-            .setContentText("Alarme")
+            .setContentText(messageBody)
             .setSmallIcon(R.drawable.alarm)
             .setColor(Color.YELLOW)
             .setContentIntent(pendingIntent)
@@ -63,9 +63,9 @@ class AlarmNotificationHelper(base: Context) : ContextWrapper(base) {
             .addAction(
                 R.drawable.ic_baseline_play_arrow_24,
                 "Parar",
-                stopAlarmTone(this.baseContext)
+                stopAlarmTone(this)
             )
-            .addAction(R.drawable.ic_baseline_snooze_24, "Soneca", snoozeAlarm(this.baseContext))
+            .addAction(R.drawable.ic_baseline_snooze_24, "Soneca", snoozeAlarm(this))
 
     }
 
