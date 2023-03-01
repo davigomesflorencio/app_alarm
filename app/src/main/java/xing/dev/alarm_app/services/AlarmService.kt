@@ -32,7 +32,6 @@ class AlarmService : JobIntentService() {
             AlarmReceiver.vibrator!!.cancel()
         }
 
-
         val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlarmReceiver::class.java)
         val pendingIntent =

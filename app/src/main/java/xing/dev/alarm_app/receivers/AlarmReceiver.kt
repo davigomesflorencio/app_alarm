@@ -16,18 +16,25 @@ import java.util.*
 
 class AlarmReceiver : BroadcastReceiver() {
 
+
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Constants.NOTIFICATION_INTENT_ACTION_START_ALARM) {
 
-            vibrate(context)
+//            Feature a implementar : setar hora do alarme na notificação
+//            val db by lazy {
+//                AlarmDatabase.getInstance(context).alarmDao
+//            }
+
+            vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
             alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             taskRingtone = RingtoneManager.getRingtone(context, alert)
             if (taskRingtone != null) {
                 taskRingtone!!.play()
+                vibrate()
             }
 
-            sendNotification(context)
+            sendNotification(context, "Alarme")
 
         } else if (intent.action == Constants.NOTIFICATION_INTENT_ACTION_STOP_ALARM) {
             if (taskRingtone!!.isPlaying) {
@@ -38,24 +45,20 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
 
-    private fun sendNotification(context: Context) {
+    private fun sendNotification(context: Context, messageBody: String) {
         val alarmNotificationHelper = AlarmNotificationHelper(context)
-        val notification = alarmNotificationHelper.getNotificationBuilder().build()
+        val notification = alarmNotificationHelper.getNotificationBuilder(messageBody).build()
         alarmNotificationHelper.getManager().notify(getID(), notification)
     }
 
-    private fun vibrate(context: Context) {
-        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator!!.vibrate(
-                VibrationEffect.createOneShot(
-                    4000,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator!!.vibrate(4000)
+    private fun vibrate() {
+        vibrator?.let {
+            if (Build.VERSION.SDK_INT >= 26) {
+                it.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                it.vibrate(200)
+            }
         }
     }
 
