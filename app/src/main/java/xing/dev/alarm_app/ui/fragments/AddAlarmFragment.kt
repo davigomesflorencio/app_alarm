@@ -102,7 +102,7 @@ class AddAlarmFragment : Fragment() {
 
         val days = arrayListOf("SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM")
         days.forEach {
-            var day = it
+            val day: String = it
             val weekdayBinding =
                 WeekdayCardBinding.inflate(layoutInflater, binding.weekdaysHolder, false)
             weekdayBinding.selected = false

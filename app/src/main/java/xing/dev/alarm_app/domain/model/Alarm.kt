@@ -12,12 +12,12 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 @Entity(tableName = "alarms")
 @TypeConverters(StringArrayConverter::class)
 data class Alarm(
-    @PrimaryKey(autoGenerate = false) var dbId: String = "",
+    @PrimaryKey(autoGenerate = true)
+    val dbId: Long = 0,
     var vibration: Boolean,
     var repeatDays: List<String>,
     var min: Int,
     var hour: Int,
-    var isAM: Boolean,
     var disabled: Boolean
 ) {
     fun formattedTime(): String {

@@ -7,7 +7,7 @@ import xing.dev.alarm_app.domain.model.Alarm
 @Dao
 interface AlarmDao {
     @Insert
-    suspend fun insert(alarm: Alarm)
+    suspend fun insert(alarm: Alarm):Long
 
     @Delete
     suspend fun delete(alarm: Alarm)
@@ -19,5 +19,5 @@ interface AlarmDao {
     fun getAlarms(): LiveData<List<Alarm>>
 
     @Query("SELECT*FROM alarms WHERE dbId=:id LIMIT 1")
-    suspend fun getAlarm(id: String): Alarm?
+    suspend fun getAlarm(id: Long): Alarm?
 }

@@ -8,22 +8,18 @@ import android.content.Intent
 import android.os.Build
 import android.os.Vibrator
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import xing.dev.alarm_app.MainActivity
 import xing.dev.alarm_app.domain.dao.AlarmDao
 import xing.dev.alarm_app.domain.model.Alarm
 import xing.dev.alarm_app.receivers.AlarmReceiver
 import xing.dev.alarm_app.util.Constants
+import xing.dev.alarm_app.util.selectDayOfWeek
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.S)
 class AddAlarmViewModel(private val application: Application, private val alarmDao: AlarmDao) :
     ViewModel() {
-    private val _isAM = MutableLiveData<Boolean>()
-    val isAM: LiveData<Boolean>
-        get() = _isAM
     var days = ArrayList<String>()
     var minute: Number
     var hour: Number
@@ -33,23 +29,14 @@ class AddAlarmViewModel(private val application: Application, private val alarmD
 
 
     init {
-        _isAM.value = true
         addVibration.value = false
 
         Calendar.getInstance().apply {
             minute = this.get(Calendar.MINUTE)
-            hour = this.get(Calendar.HOUR)
-            if (hour.toInt() > 12) {
-                hour = hour.toInt() - 12
-            }
+            hour = this.get(Calendar.HOUR_OF_DAY)
         }
 
-
         vibrator = application.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    }
-
-    fun setAM(value: Boolean) {
-        _isAM.value = value
     }
 
     fun addToSelectedDays(day: String) {
@@ -65,44 +52,71 @@ class AddAlarmViewModel(private val application: Application, private val alarmD
 
     suspend fun saveAlarm(): Boolean {
         try {
-            val alarmId = UUID.randomUUID().toString()
             val alarm = Alarm(
-                alarmId,
-                addVibration.value!!,
-                days,
-                minute.toInt(),
-                hour.toInt(),
-                isAM.value!!,
-                false
+                dbId = 0,
+                vibration = addVibration.value!!,
+                repeatDays = days,
+                min = minute.toInt(),
+                hour = hour.toInt(),
+                disabled = false,
             )
-            alarmDao.insert(alarm)
+            val alarmId = alarmDao.insert(alarm)
 
             val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val calendar: Calendar = Calendar.getInstance().apply {
-                set(Calendar.HOUR, if (hour.toInt() == 12) 0 else hour.toInt())
-                set(Calendar.MINUTE, minute.toInt())
-                set(Calendar.MILLISECOND, 0)
-                set(Calendar.AM_PM, if (isAM.value!!) Calendar.AM else Calendar.PM)
+
+            if (alarm.repeatDays.isEmpty()) {
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, alarm.hour)
+                    set(Calendar.MINUTE, alarm.min)
+                }
+                if (calendar.before(Calendar.getInstance())) {
+                    calendar.add(Calendar.DATE, 1)
+                }
+
+                val alarmIntent = Intent(application, AlarmReceiver::class.java).let {
+                    it.action = Constants.NOTIFICATION_INTENT_ACTION_START_ALARM
+                    it.putExtra("id", alarm.dbId)
+                    PendingIntent.getBroadcast(
+                        application,
+                        alarmId.toInt(),
+                        it,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent)
+            }else{
+                days.forEachIndexed { _, element ->
+                    val calendar: Calendar = Calendar.getInstance().apply {
+                        set(Calendar.HOUR, hour.toInt())
+                        set(Calendar.MINUTE, minute.toInt())
+                        set(Calendar.MILLISECOND, 0)
+                        set(Calendar.DAY_OF_WEEK, selectDayOfWeek(element))
+                    }
+
+                    if (calendar.before(Calendar.getInstance())) {
+                        calendar.add(Calendar.DATE, 7)
+                    }
+
+                    val alarmIntent = Intent(application, AlarmReceiver::class.java).let {
+                        it.action = Constants.NOTIFICATION_INTENT_ACTION_START_ALARM
+                        it.putExtra("id", alarmId)
+                        PendingIntent.getBroadcast(
+                            application,
+                            alarmId.toInt(),
+                            it,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                    }
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent)
+                }
             }
 
-            val alarmIntent = Intent(application, AlarmReceiver::class.java).let {
-                it.action = Constants.NOTIFICATION_INTENT_ACTION_START_ALARM
-                it.putExtra("id", alarmId)
-                PendingIntent.getBroadcast(application, 0, it, PendingIntent.FLAG_CANCEL_CURRENT)
-            }
-
-            val intent2 = Intent(application, MainActivity::class.java).let {
-                PendingIntent.getActivity(application, 1, it, 0)
-            }
-
-            alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(calendar.timeInMillis, intent2),
-                alarmIntent
-            )
             return true
         } catch (e: Exception) {
             return false
         }
     }
+
 }
 
