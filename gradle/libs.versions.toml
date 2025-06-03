@@ -1,0 +1,58 @@
+[versions]
+googleServices = "4.3.15"
+gradle = "8.9.1"
+kotlinGradlePluginVersion = "1.7.10"
+ktlintGradle = "9.4.0"
+minSdkMobile = "33"
+numberpicker = "1.0.3"
+targetSdkMobile = "35"
+pluginCompose = "2.0.0"
+activity-compose = "1.6.1"
+compose = "1.5.1"
+compose-material3 = "1.4.0-alpha15"
+navigation = "2.5.3"
+ktx = "1.9.0"
+koin = "3.4.3"
+accompanist-permissions = "0.28.0"
+room = "2.7.1"
+junit = "4.13.2"
+work = "2.8.0"
+
+nav3Core = "1.0.0-alpha01"
+lifecycleViewmodelNav3 = "1.0.0-alpha01"
+kotlinSerialization = "2.1.21"
+kotlinxSerializationCore = "1.8.1"
+
+[plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "pluginCompose" }
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "ktx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePluginVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+com-google-accompanist-permission = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+koin-work-manager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
+numberpicker = { module = "com.chargemap.compose:numberpicker", version.ref = "numberpicker" }
+
+# Core Navigation 3 libraries
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+
+# Optional add-on libraries
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
