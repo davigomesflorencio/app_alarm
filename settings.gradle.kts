@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "alarm_app"
-include ':app'
+include(":app")
